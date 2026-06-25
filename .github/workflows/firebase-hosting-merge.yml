@@ -40,11 +40,12 @@ jobs:
             echo "Secret exists"
           fi
 
-      - name: Deploy to Firebase Hosting
-        uses: FirebaseExtended/action-hosting-deploy@v0.10.0
+      - name: Write service account
+        run: |
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_TEAK_ALLOY_426016_B4 }}' > service-account.json
 
-        with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TEAK_ALLOY_426016_B4 }}
-          channelId: live
-          projectId: teak-alloy-426016-b4
+      - name: Authenticate GCP
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/service-account.json
+        run: |
+          npx firebase-tools projects:list
