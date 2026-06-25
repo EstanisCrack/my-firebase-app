@@ -44,13 +44,23 @@ jobs:
         run: |
           echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_TEAK_ALLOY_426016_B4 }}' > service-account.json
 
-      - name: Validate service account JSON
+      - name: Verify file exists
+        run: |
+          ls -la
+          cat service-account.json | jq '.project_id'
+
+      - name: Validate Secret Structure
         run: |
           echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_TEAK_ALLOY_426016_B4 }}' > service-account.json
-          jq . service-account.json > /dev/null
 
-      - name: Authenticate GCP
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/service-account.json
+          jq '{
+            type,
+            project_id,
+            client_email,
+            private_key_id
+          }' service-account.json
+
+      - name: Test Firebase Auth
         run: |
-          npx firebase-tools projects:list
+          export GOOGLE_APPLICATION_CREDENTIALS=$(pwd)/service-account.json
+          npx firebase-tools projects:list --debug
