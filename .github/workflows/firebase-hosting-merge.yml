@@ -44,6 +44,11 @@ jobs:
         run: |
           echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_TEAK_ALLOY_426016_B4 }}' > service-account.json
 
+      - name: Validate service account JSON
+        run: |
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_TEAK_ALLOY_426016_B4 }}' > service-account.json
+          jq . service-account.json > /dev/null
+
       - name: Authenticate GCP
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/service-account.json
