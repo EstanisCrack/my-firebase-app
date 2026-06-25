@@ -60,7 +60,12 @@ jobs:
             private_key_id
           }' service-account.json
 
-      - name: Test Firebase Auth
+      - name: Verify credential env var
         run: |
           export GOOGLE_APPLICATION_CREDENTIALS=$(pwd)/service-account.json
+
+          echo "$GOOGLE_APPLICATION_CREDENTIALS"
+
+          test -f "$GOOGLE_APPLICATION_CREDENTIALS" && echo "File exists"
+
           npx firebase-tools projects:list --debug
